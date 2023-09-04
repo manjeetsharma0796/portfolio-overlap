@@ -3,7 +3,7 @@ const assert = require("assert");
 const { myPortfolioApp } = require("../src/my-portfolio");
 
 describe("myPortfolioApp", () => {
-  it("should handle input commands", () => {
+  it("should calculate overlap as half as half of the stocks exists", () => {
     const availableFunds = [
       {
         name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
