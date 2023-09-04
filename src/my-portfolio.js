@@ -1,10 +1,10 @@
 const myPortfolioApp = (parsedCommands, availableFunds) => {
   const log = [];
-  const investorPortfolio = [];
+  const ownedFunds = [];
 
   const createPortfolio = (funds) => {
     funds.forEach((fund) => {
-      investorPortfolio.push(fund);
+      ownedFunds.push(fund);
     });
   };
 
@@ -24,18 +24,17 @@ const myPortfolioApp = (parsedCommands, availableFunds) => {
     }
 
     const stocks = getStockList(fundName);
-    investorPortfolio.forEach((investorFundName) => {
+    ownedFunds.forEach((investorFundName) => {
       const investorStocks = getStockList(investorFundName);
 
-      const commonStockCount = investorStocks.filter((investorStock) =>
+      const overlapCount = investorStocks.filter((investorStock) =>
         stocks.includes(investorStock)
       ).length;
 
       const overlap =
-        ((2 * commonStockCount) / (stocks.length + investorStocks.length)) *
-        100;
+        ((2 * overlapCount) / (stocks.length + investorStocks.length)) * 100;
 
-      log.push(`${fundName} ${investorFundName} ${overlap.toFixed(2)}`);
+      log.push(`${fundName} ${investorFundName} ${overlap.toFixed(2)}%`);
     });
   };
 
@@ -46,7 +45,7 @@ const myPortfolioApp = (parsedCommands, availableFunds) => {
         return;
       }
 
-      investorPortfolio.push(fund);
+      ownedFunds.push(fund);
     }
   };
 
