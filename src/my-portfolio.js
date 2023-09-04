@@ -3,7 +3,9 @@ const myPortfolioApp = (parsedCommands, availableFunds) => {
   const investorPortfolio = [];
 
   const createPortfolio = (funds) => {
-    funds.forEach((fund) => investorPortfolio.push(fund));
+    funds.forEach((fund) => {
+      investorPortfolio.push(fund);
+    });
   };
 
   const getStockList = (fundName) => {
@@ -29,14 +31,24 @@ const myPortfolioApp = (parsedCommands, availableFunds) => {
     });
   };
 
+  const isFundExist = (fundName) => {
+    return availableFunds.some((fund) => fund.name === fundName);
+  };
+
+  const addStock = (funds) => {
+    for (const fund of funds) {
+      if (!isFundExist(fund)) {
+        log.push("FUND_NOT_EXIST");
+        return;
+      }
+      investorPortfolio.push();
+    }
+  };
+
   const commandLookup = {
-    CURRENT_PORTFOLIO: (funds) => {
-      createPortfolio(funds);
-    },
-    CALCULATE_OVERLAP: (fund) => {
-      calculateOverlap(fund);
-    },
-    ADD_STOCK: () => {},
+    CURRENT_PORTFOLIO: (funds) => createPortfolio(funds),
+    CALCULATE_OVERLAP: (fund) => calculateOverlap(fund),
+    ADD_STOCK: (funds) => addStock(funds),
   };
 
   const execute = () => {

@@ -34,7 +34,7 @@ describe("myPortfolioApp", () => {
     );
   });
 
-  it("should handle invalid adding fund", () => {
+  it("should be able to add fund", () => {
     const availableFunds = [
       {
         name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
@@ -45,19 +45,16 @@ describe("myPortfolioApp", () => {
         stocks: ["INFOSYS LIMITED", "BHARTI AIRTEL LIMITED"],
       },
     ];
+
     const parsedCommands = [
       {
-        command: "CURRENT_PORTFOLIO",
-        args: ["ICICI_PRU_NIFTY_NEXT_50_INDEX"],
-      },
-      {
-        command: "CALCULATE_OVERLAP",
-        args: ["MIRAE_ASSET_EMERGING_BLUECHIP"],
+        command: "ADD_STOCK",
+        args: ["MIRAE_BLUECHIP"],
       },
     ];
 
     const expected =
-      "MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_NIFTY_NEXT_50_INDEX 50.00";
+      "FUND_NOT_EXIST";
 
     assert.strictEqual(
       myPortfolioApp(parsedCommands, availableFunds),

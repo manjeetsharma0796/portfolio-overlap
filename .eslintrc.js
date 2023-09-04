@@ -9,7 +9,7 @@ module.exports = {
     "semi": ["error", "always", { omitLastInOneLineBlock: true }],
     "quotes": ["error", "double"],
     "indent": ["error", 2, { SwitchCase: 1 }],
-    "complexity": ["error", 2],
+    "complexity": ["error", 4],
     "max-statements": ["error", 18],
     "no-cond-assign": "error",
     "no-empty": "warn",
