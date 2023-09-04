@@ -1,4 +1,4 @@
-class UserPortfolio {
+class InvestorPortfolio {
   #funds;
 
   constructor() {
@@ -14,4 +14,4 @@ class UserPortfolio {
   }
 }
 
-module.exports = { UserPortfolio };
+module.exports = { InvestorPortfolio };
