@@ -1,0 +1,31 @@
+funds
+
+  1. fund name
+  2. stock list
+
+each stock list consist of company names
+
+-----------
+
+Entities
+
+1. UserPortfolio
+    fields
+      fundlist = [ fund1, fund2, fund3 ]
+
+    methods
+      addFund(fundName)
+
+2. MarketPortfolio
+    fields 
+      fundList = [ { name, stockList }, { name, stockList } ]
+
+    methods
+      calculateDiversification(stockSelected, userStock)
+
+3. Manager -> controller
+    fields
+      userPortfolio
+      marketPortfolio
+      renderer
+

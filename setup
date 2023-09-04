@@ -1,0 +1,7 @@
+#! /bin/bash
+
+echo "-----Setting up environment-----"
+
+npm install
+
+cp pre-commit .git/hooks/
