@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const { parseCommands } = require("./src/command-parser");
-const { myPortfolioApp } = require("./src/my-portfolio");
+const { evaluatePortfolioQuerry } = require("./src/porfolio-querry-evaluator");
 
 const main = () => {
   // eslint-disable-next-line prefer-destructuring
@@ -12,7 +12,7 @@ const main = () => {
 
   const rawCommands = fs.readFileSync(filePath, "utf-8");
   const parsedCommands = parseCommands(rawCommands);
-  const result = myPortfolioApp(parsedCommands, availableFunds);
+  const result = evaluatePortfolioQuerry(parsedCommands, availableFunds);
 
   console.log(result);
 };
