@@ -44,8 +44,8 @@ const commandLookup = {
   CURRENT_PORTFOLIO: (fundList, porfolio) => {
     porfolio.push(...fundList);
   },
-  CALCULATE_OVERLAP: ([fund], porfolio, log, funds) => {
-    const result = handleOverlapQuery(fund, porfolio, funds);
+  CALCULATE_OVERLAP: (fund, porfolio, log, funds) => {
+    const result = handleOverlapQuery([fund], porfolio, funds);
     log.push(...result);
   },
   ADD_STOCK: (fundAndStock, _, __, funds) => {

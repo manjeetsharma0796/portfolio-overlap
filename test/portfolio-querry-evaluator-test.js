@@ -27,7 +27,7 @@ MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
       fs.readFileSync("resource/mutual-funds.json", "utf-8")
     );
     const rawCommands = fs.readFileSync(
-      "./resource/sample_input/input1.txt",
+      "./resource/sample-input/input1.txt",
       "utf-8"
     );
     const parsedCommands = parseCommands(rawCommands);
@@ -51,7 +51,7 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
       fs.readFileSync("resource/mutual-funds.json", "utf-8")
     );
     const rawCommands = fs.readFileSync(
-      "./resource/sample_input/input2.txt",
+      "./resource/sample-input/input2.txt",
       "utf-8"
     );
     const parsedCommands = parseCommands(rawCommands);

@@ -32,3 +32,14 @@ Entities
 ---------------
 
 restructure the funds 
+---------------
+
+class PorfolioAnalyzer {
+  constructor() {
+    this.log = [];
+    this.porfolio = [];
+  }
+
+  
+}
+
