@@ -11,67 +11,6 @@ const {
 const { parseCommands } = require("../src/command-parser");
 
 describe("evaluatePortfolioQuerry", () => {
-  it("should calculate overlap as half as half of the stocks exists", () => {
-    const mutualFunds = [
-      {
-        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
-        stocks: ["INFOSYS LIMITED", "INDRAPRASTHA GAS LIMITED"],
-      },
-      {
-        name: "MIRAE_ASSET_EMERGING_BLUECHIP",
-        stocks: ["INFOSYS LIMITED", "BHARTI AIRTEL LIMITED"],
-      },
-    ];
-    const parsedCommands = [
-      {
-        command: "CURRENT_PORTFOLIO",
-        args: ["ICICI_PRU_NIFTY_NEXT_50_INDEX"],
-      },
-      {
-        command: "CALCULATE_OVERLAP",
-        args: ["MIRAE_ASSET_EMERGING_BLUECHIP"],
-      },
-    ];
-
-    const expected =
-      "MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_NIFTY_NEXT_50_INDEX 50.00%";
-
-    assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, mutualFunds),
-      expected
-    );
-  });
-
-  it("should handle non existing fund overlap calculation", () => {
-    const availableFunds = [
-      {
-        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
-        stocks: ["INFOSYS LIMITED", "INDRAPRASTHA GAS LIMITED"],
-      },
-      {
-        name: "MIRAE_ASSET_EMERGING_BLUECHIP",
-        stocks: ["INFOSYS LIMITED", "BHARTI AIRTEL LIMITED"],
-      },
-    ];
-    const parsedCommands = [
-      {
-        command: "CURRENT_PORTFOLIO",
-        args: ["ICICI_PRU_NIFTY_NEXT_50_INDEX"],
-      },
-      {
-        command: "CALCULATE_OVERLAP",
-        args: ["MIRAE_ASSET_BLUECHIP"],
-      },
-    ];
-
-    const expected = "FUND_NOT_FOUND";
-
-    assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, availableFunds),
-      expected
-    );
-  });
-
   it("should able to meet output for sample input 1", () => {
     const expectedOutput = `MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 39.13%
 MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
@@ -186,5 +125,68 @@ describe("countOverlap", () => {
     const overlap = countOverlap(ownedStocks, stocks);
 
     assert.strictEqual(overlap, "50.00%");
+  });
+});
+
+describe("handleOverlapQuerry", () => {
+  it("should calculate overlap as half as half of the stocks exists", () => {
+    const mutualFunds = [
+      {
+        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        stocks: ["INFOSYS LIMITED", "INDRAPRASTHA GAS LIMITED"],
+      },
+      {
+        name: "MIRAE_ASSET_EMERGING_BLUECHIP",
+        stocks: ["INFOSYS LIMITED", "BHARTI AIRTEL LIMITED"],
+      },
+    ];
+    const parsedCommands = [
+      {
+        command: "CURRENT_PORTFOLIO",
+        args: ["ICICI_PRU_NIFTY_NEXT_50_INDEX"],
+      },
+      {
+        command: "CALCULATE_OVERLAP",
+        args: ["MIRAE_ASSET_EMERGING_BLUECHIP"],
+      },
+    ];
+
+    const expected =
+      "MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_NIFTY_NEXT_50_INDEX 50.00%";
+
+    assert.strictEqual(
+      evaluatePortfolioQuerry(parsedCommands, mutualFunds),
+      expected
+    );
+  });
+
+  it("should handle non existing fund overlap calculation", () => {
+    const availableFunds = [
+      {
+        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        stocks: ["INFOSYS LIMITED", "INDRAPRASTHA GAS LIMITED"],
+      },
+      {
+        name: "MIRAE_ASSET_EMERGING_BLUECHIP",
+        stocks: ["INFOSYS LIMITED", "BHARTI AIRTEL LIMITED"],
+      },
+    ];
+    const parsedCommands = [
+      {
+        command: "CURRENT_PORTFOLIO",
+        args: ["ICICI_PRU_NIFTY_NEXT_50_INDEX"],
+      },
+      {
+        command: "CALCULATE_OVERLAP",
+        args: ["MIRAE_ASSET_BLUECHIP"],
+      },
+    ];
+
+    const expected = "FUND_NOT_FOUND";
+
+    assert.strictEqual(
+      evaluatePortfolioQuerry(parsedCommands, availableFunds),
+      expected
+    );
   });
 });

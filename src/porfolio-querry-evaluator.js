@@ -13,21 +13,13 @@ const handleOverlapQuerry = (fundName, porfolio, availableFunds) => {
     return ["FUND_NOT_FOUND"];
   }
 
-  const log = [];
   const stocks = availableFunds[fundName];
 
-  porfolio.forEach((ownedFundName) => {
+  return porfolio.map((ownedFundName) => {
     const ownedStocks = availableFunds[ownedFundName];
     const overlap = countOverlap(ownedStocks, stocks);
-    log.push(`${fundName} ${ownedFundName} ${overlap}`);
-  });
 
-  return log;
-};
-
-const execute = (parsedCommands, commandLookup) => {
-  parsedCommands.forEach(({ command, args }) => {
-    commandLookup[command](args);
+    return `${fundName} ${ownedFundName} ${overlap}`;
   });
 };
 
@@ -67,7 +59,10 @@ const evaluatePortfolioQuerry = (parsedCommands, mutualFunds) => {
     },
   };
 
-  execute(parsedCommands, commandLookup);
+  parsedCommands.forEach(({ command, args }) => {
+    commandLookup[command](args);
+  });
+
   return log.join("\n").trim();
 };
 
