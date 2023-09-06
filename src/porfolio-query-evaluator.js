@@ -5,21 +5,21 @@ const countOverlap = (ownedStocks, stocks) => {
   const overlap =
     ((2 * overlapCount) / (stocks.length + ownedStocks.length)) * 100;
 
-  return `${overlap.toFixed(2)}%`;
+  return overlap;
 };
 
-const handleOverlapQuery = (fundName, porfolio, availableFunds) => {
+const handleOverlapQuery = (fundName, portfolio, availableFunds) => {
   if (!availableFunds[fundName]) {
     return ["FUND_NOT_FOUND"];
   }
 
   const stocks = availableFunds[fundName];
 
-  return porfolio.map((ownedFundName) => {
+  return portfolio.map((ownedFundName) => {
     const ownedStocks = availableFunds[ownedFundName];
     const overlap = countOverlap(ownedStocks, stocks);
 
-    return `${fundName} ${ownedFundName} ${overlap}`;
+    return `${fundName} ${ownedFundName} ${overlap.toFixed(2)}%`;
   });
 };
 
@@ -71,4 +71,5 @@ module.exports = {
   addStock,
   restructureFund,
   countOverlap,
+  handleOverlapQuery
 };
