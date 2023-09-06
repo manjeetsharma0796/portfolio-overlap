@@ -2,7 +2,11 @@ const { describe, it } = require("node:test");
 const assert = require("assert");
 const fs = require("fs");
 
-const { evaluatePortfolioQuerry } = require("../src/porfolio-querry-evaluator");
+const {
+  evaluatePortfolioQuerry,
+  addStock,
+  restructureFund,
+} = require("../src/porfolio-querry-evaluator");
 const { parseCommands } = require("../src/command-parser");
 
 describe("evaluatePortfolioQuerry", () => {
@@ -115,5 +119,52 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
       evaluatePortfolioQuerry(parsedCommands, availableFunds),
       expected
     );
+  });
+});
+
+describe("addStock", () => {
+  it("should add stock to mentioned fund", () => {
+    const availableFunds = {
+      ICICI_PRU_INDEX: [
+        "INDRAPRASTHA GAS LIMITED",
+        "COLGATE - PALMOLIVE (INDIA) LIMITED",
+      ],
+    };
+
+    const fund = "ICICI_PRU_INDEX";
+    const stock = "NOCIL";
+    const updatedFunds = addStock(fund, stock, availableFunds);
+    const expectedFunds = {
+      ICICI_PRU_INDEX: [
+        "INDRAPRASTHA GAS LIMITED",
+        "COLGATE - PALMOLIVE (INDIA) LIMITED",
+        "NOCIL",
+      ],
+    };
+
+    assert.deepStrictEqual(updatedFunds, expectedFunds);
+  });
+});
+
+describe("restructureFund", () => {
+  it("should restructure funds list", () => {
+    const availableFunds = [
+      {
+        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        stocks: [
+          "INDRAPRASTHA GAS LIMITED",
+          "COLGATE - PALMOLIVE (INDIA) LIMITED",
+        ],
+      },
+    ];
+    const expectedStructuredFund = {
+      ICICI_PRU_NIFTY_NEXT_50_INDEX: [
+        "INDRAPRASTHA GAS LIMITED",
+        "COLGATE - PALMOLIVE (INDIA) LIMITED",
+      ],
+    };
+    const restructuredFund = restructureFund(availableFunds);
+
+    assert.deepStrictEqual(restructuredFund, expectedStructuredFund);
   });
 });

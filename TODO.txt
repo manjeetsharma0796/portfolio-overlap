@@ -29,3 +29,6 @@ Entities
       marketPortfolio
       renderer
 
+---------------
+
+restructure the funds 
