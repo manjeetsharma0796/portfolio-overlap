@@ -8,7 +8,7 @@ const countOverlap = (ownedStocks, stocks) => {
   return `${overlap.toFixed(2)}%`;
 };
 
-const handleOverlapQuerry = (fundName, porfolio, availableFunds) => {
+const handleOverlapQuery = (fundName, porfolio, availableFunds) => {
   if (!availableFunds[fundName]) {
     return ["FUND_NOT_FOUND"];
   }
@@ -34,40 +34,40 @@ const restructureFund = (fund) => {
 };
 
 const addStock = (fund, stock, availableFunds) => {
-  const availableFundsCopy = JSON.parse(JSON.stringify(availableFunds));
+  const availableFundsCopy = availableFunds;
   availableFundsCopy[fund].push(stock);
 
   return availableFundsCopy;
 };
 
-const evaluatePortfolioQuerry = (parsedCommands, mutualFunds) => {
+const commandLookup = {
+  CURRENT_PORTFOLIO: (fundList, porfolio) => {
+    porfolio.push(...fundList);
+  },
+  CALCULATE_OVERLAP: ([fund], porfolio, log, funds) => {
+    const result = handleOverlapQuery(fund, porfolio, funds);
+    log.push(...result);
+  },
+  ADD_STOCK: (fundAndStock, _, __, funds) => {
+    const [fund, stock] = fundAndStock;
+    addStock(fund, stock, funds);
+  },
+};
+
+const evaluatePortfolioQuery = (parsedCommands, mutualFunds) => {
   const log = [];
   const porfolio = [];
-  let funds = restructureFund(mutualFunds);
-
-  const commandLookup = {
-    CURRENT_PORTFOLIO: (fundList) => {
-      porfolio.push(...fundList);
-    },
-    CALCULATE_OVERLAP: ([fund]) => {
-      const result = handleOverlapQuerry(fund, porfolio, funds);
-      log.push(...result);
-    },
-    ADD_STOCK: (fundAndStock) => {
-      const [fund, stock] = fundAndStock;
-      funds = addStock(fund, stock, funds);
-    },
-  };
+  const funds = restructureFund(mutualFunds);
 
   parsedCommands.forEach(({ command, args }) => {
-    commandLookup[command](args);
+    commandLookup[command](args, porfolio, log, funds);
   });
 
   return log.join("\n").trim();
 };
 
 module.exports = {
-  evaluatePortfolioQuerry,
+  evaluatePortfolioQuery,
   addStock,
   restructureFund,
   countOverlap,

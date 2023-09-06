@@ -3,14 +3,14 @@ const assert = require("assert");
 const fs = require("fs");
 
 const {
-  evaluatePortfolioQuerry,
+  evaluatePortfolioQuery,
   addStock,
   restructureFund,
   countOverlap,
-} = require("../src/porfolio-querry-evaluator");
+} = require("../src/porfolio-query-evaluator");
 const { parseCommands } = require("../src/command-parser");
 
-describe("evaluatePortfolioQuerry", () => {
+describe("evaluatePortfolioQuery", () => {
   it("should able to meet output for sample input 1", () => {
     const expectedOutput = `MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 39.13%
 MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
@@ -32,7 +32,7 @@ MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
     const parsedCommands = parseCommands(rawCommands);
 
     assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, funds),
+      evaluatePortfolioQuery(parsedCommands, funds),
       expectedOutput
     );
   });
@@ -56,7 +56,7 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
     const parsedCommands = parseCommands(rawCommands);
 
     assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, funds),
+      evaluatePortfolioQuery(parsedCommands, funds),
       expectedOutput
     );
   });
@@ -70,10 +70,9 @@ describe("addStock", () => {
         "COLGATE - PALMOLIVE (INDIA) LIMITED",
       ],
     };
-
     const fund = "ICICI_PRU_INDEX";
     const stock = "NOCIL";
-    const updatedFunds = addStock(fund, stock, funds);
+    addStock(fund, stock, funds);
 
     const expectedFunds = {
       ICICI_PRU_INDEX: [
@@ -83,7 +82,7 @@ describe("addStock", () => {
       ],
     };
 
-    assert.deepStrictEqual(updatedFunds, expectedFunds);
+    assert.deepStrictEqual(funds, expectedFunds);
   });
 });
 
@@ -128,7 +127,7 @@ describe("countOverlap", () => {
   });
 });
 
-describe("handleOverlapQuerry", () => {
+describe("handleOverlapQuery", () => {
   it("should calculate overlap as half as half of the stocks exists", () => {
     const mutualFunds = [
       {
@@ -155,7 +154,7 @@ describe("handleOverlapQuerry", () => {
       "MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_NIFTY_NEXT_50_INDEX 50.00%";
 
     assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, mutualFunds),
+      evaluatePortfolioQuery(parsedCommands, mutualFunds),
       expected
     );
   });
@@ -185,7 +184,7 @@ describe("handleOverlapQuerry", () => {
     const expected = "FUND_NOT_FOUND";
 
     assert.strictEqual(
-      evaluatePortfolioQuerry(parsedCommands, availableFunds),
+      evaluatePortfolioQuery(parsedCommands, availableFunds),
       expected
     );
   });
