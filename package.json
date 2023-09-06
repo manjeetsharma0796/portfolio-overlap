@@ -5,16 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node geektrust.js",
-    "test": "node --test",
-    "lint": "eslint .",
-    "coverage": "nyc node --test"
+    "test": "mocha",
+    "lint": "eslint ."
   },
   "author": "geektrust",
   "license": "ISC",
-  "dependencies": {
-    "mocha": "^10.0.0"
-  },
   "devDependencies": {
-    "eslint": "^8.48.0"
+    "eslint": "^8.48.0",
+    "mocha": "^10.2.0"
   }
 }
