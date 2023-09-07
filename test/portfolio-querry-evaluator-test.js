@@ -9,7 +9,7 @@ const {
   countOverlap,
   handleOverlapQuery,
 } = require("../src/porfolio-query-evaluator");
-const { parseCommands } = require("../src/command-parser");
+const { parseCommands, restructureFunds } = require("../src/parser");
 
 describe("evaluatePortfolioQuery", () => {
   it("should able to meet output for sample input 1", () => {
@@ -26,6 +26,7 @@ MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
     const { funds } = JSON.parse(
       fs.readFileSync("resource/mutual-funds.json", "utf-8")
     );
+    const structuredFunds = restructureFunds(funds);
     const rawCommands = fs.readFileSync(
       "./resource/sample-input/input1.txt",
       "utf-8"
@@ -33,7 +34,7 @@ MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
     const parsedCommands = parseCommands(rawCommands);
 
     assert.strictEqual(
-      evaluatePortfolioQuery(parsedCommands, funds),
+      evaluatePortfolioQuery(parsedCommands, structuredFunds),
       expectedOutput
     );
   });
@@ -50,6 +51,7 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
     const { funds } = JSON.parse(
       fs.readFileSync("resource/mutual-funds.json", "utf-8")
     );
+    const structuredFunds = restructureFunds(funds);
     const rawCommands = fs.readFileSync(
       "./resource/sample-input/input2.txt",
       "utf-8"
@@ -57,7 +59,7 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
     const parsedCommands = parseCommands(rawCommands);
 
     assert.strictEqual(
-      evaluatePortfolioQuery(parsedCommands, funds),
+      evaluatePortfolioQuery(parsedCommands, structuredFunds),
       expectedOutput
     );
   });
@@ -104,7 +106,7 @@ describe("restructureFund", () => {
         "COLGATE - PALMOLIVE (INDIA) LIMITED",
       ],
     };
-    const restructuredFund = restructureFund(funds);
+    const restructuredFund = restructureFunds(funds);
 
     assert.deepStrictEqual(restructuredFund, expectedStructuredFund);
   });
