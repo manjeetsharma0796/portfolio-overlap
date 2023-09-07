@@ -31,23 +31,26 @@ const commandLookup = {
   CURRENT_PORTFOLIO: (ownedFunds, portfolio) => {
     portfolio.push(...ownedFunds);
   },
-  CALCULATE_OVERLAP: (fundNames, portfolio, logs, funds) => {
+  CALCULATE_OVERLAP: (fundNames, portfolio, funds) => {
     const [fundName] = fundNames;
-    const result = handleOverlapQuery(fundName, portfolio, funds);
-    logs.push(...result);
+    return handleOverlapQuery(fundName, portfolio, funds);
   },
-  ADD_STOCK: (fundAndStock, _, __, funds) => {
+  ADD_STOCK: (fundAndStock, _, funds) => {
     const [fundName, stock] = fundAndStock;
     addStock(fundName, stock, funds);
   },
 };
 
 const evaluatePortfolioQuery = (commandsWithArgs, funds) => {
-  const logs = [];
   const portfolio = [];
+  const logs = [];
 
   commandsWithArgs.forEach(({ command, args }) => {
-    commandLookup[command](args, portfolio, logs, funds);
+    const result = commandLookup[command](args, portfolio, funds);
+
+    if (result) {
+      logs.push(...result);
+    }
   });
 
   return logs;
