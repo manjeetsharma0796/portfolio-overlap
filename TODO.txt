@@ -37,7 +37,7 @@ restructure the funds
 class PorfolioAnalyzer {
   constructor() {
     this.log = [];
-    this.porfolio = [];
+    this.portfolio = [];
   }
 
   
@@ -45,6 +45,6 @@ class PorfolioAnalyzer {
 
 ------------
 
-porfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX", "PARAG_PARIKH_CONSERVATIVE_HYBRID"];
+portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX", "PARAG_PARIKH_CONSERVATIVE_HYBRID"];
 
 ownedFund = "ICICI_PRU_NIFTY_NEXT_50_INDEX";

@@ -8,14 +8,10 @@ const parseCommands = (rawCommands) => {
   return parsedCommands;
 };
 
-const restructureFunds = (funds) => {
-  const restructuredFund = {};
-
-  funds.forEach(({ name, stocks }) => {
-    restructuredFund[name] = stocks;
-  });
-
-  return restructuredFund;
-};
+const restructureFunds = (funds) =>
+  funds.reduce((restructuredFunds, { name, stocks }) => {
+    restructuredFunds[name] = stocks;
+    return restructuredFunds;
+  }, {});
 
 module.exports = { parseCommands, restructureFunds };

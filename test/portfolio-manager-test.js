@@ -7,7 +7,7 @@ const {
   addStock,
   countOverlap,
   handleOverlapQuery,
-} = require("../src/porfolio-query-evaluator");
+} = require("../src/portfolio-manager");
 const { parseCommands, restructureFunds } = require("../src/parser");
 
 describe("evaluatePortfolioQuery", () => {
@@ -167,13 +167,13 @@ describe("handleOverlapQuery", () => {
       ],
     };
 
-    const porfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
+    const portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
     const fundName = ["MIRAE_ASSET_BLUECHIP"];
 
     const expected = ["FUND_NOT_FOUND"];
 
     assert.deepStrictEqual(
-      handleOverlapQuery(fundName, porfolio, funds),
+      handleOverlapQuery(fundName, portfolio, funds),
       expected
     );
   });

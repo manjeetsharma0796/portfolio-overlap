@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const { parseCommands, restructureFunds } = require("./src/parser");
-const { evaluatePortfolioQuery } = require("./src/porfolio-query-evaluator");
+const { evaluatePortfolioQuery } = require("./src/portfolio-manager");
 
 const main = () => {
   // eslint-disable-next-line prefer-destructuring

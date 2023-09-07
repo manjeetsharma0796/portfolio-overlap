@@ -28,12 +28,12 @@ const addStock = (fundName, stock, funds) => {
 };
 
 const commandLookup = {
-  CURRENT_PORTFOLIO: (ownedFunds, porfolio) => {
-    porfolio.push(...ownedFunds);
+  CURRENT_PORTFOLIO: (ownedFunds, portfolio) => {
+    portfolio.push(...ownedFunds);
   },
-  CALCULATE_OVERLAP: (fundNames, porfolio, log, funds) => {
+  CALCULATE_OVERLAP: (fundNames, portfolio, log, funds) => {
     const [fundName] = fundNames;
-    const result = handleOverlapQuery(fundName, porfolio, funds);
+    const result = handleOverlapQuery(fundName, portfolio, funds);
     log.push(...result);
   },
   ADD_STOCK: (fundAndStock, _, __, funds) => {
@@ -44,10 +44,10 @@ const commandLookup = {
 
 const evaluatePortfolioQuery = (commandsWithArgs, funds) => {
   const log = [];
-  const porfolio = [];
+  const portfolio = [];
 
   commandsWithArgs.forEach(({ command, args }) => {
-    commandLookup[command](args, porfolio, log, funds);
+    commandLookup[command](args, portfolio, log, funds);
   });
 
   return log.join("\n").trim();
