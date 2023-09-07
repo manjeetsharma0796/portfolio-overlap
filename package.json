@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node geektrust.js ./resource/sample-input/input1.txt",
-    "test": "mocha",
+    "test": "node --test",
     "lint": "eslint ."
   },
   "author": "geektrust",

@@ -5,7 +5,6 @@ const fs = require("fs");
 const {
   evaluatePortfolioQuery,
   addStock,
-  restructureFund,
   countOverlap,
   handleOverlapQuery,
 } = require("../src/porfolio-query-evaluator");
