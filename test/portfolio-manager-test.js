@@ -8,10 +8,28 @@ const {
   countOverlap,
   handleOverlapQuery,
 } = require("../src/portfolio-manager");
-const { parseCommands, restructureFunds } = require("../src/parser");
+const { parseCommands, parseFunds } = require("../src/parser");
+const { displayLog } = require("../src/renderer");
 
 describe("evaluatePortfolioQuery", () => {
   it("should able to meet output for sample input 1", () => {
+    const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
+    const funds = parseFunds(fundsJSON);
+
+    const rawCommands = fs.readFileSync(
+      "./resource/sample-input/input1.txt",
+      "utf-8"
+    );
+    const commands = parseCommands(rawCommands);
+    const logs = evaluatePortfolioQuery(commands, funds);
+
+    let output = "";
+    const renderer = (text) => {
+      output = text;
+    };
+
+    displayLog(logs, renderer);
+
     const expectedOutput = `MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 39.13%
 MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
 MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%
@@ -22,23 +40,27 @@ MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 38.71%
 MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
 MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
 
-    const { funds } = JSON.parse(
-      fs.readFileSync("resource/mutual-funds.json", "utf-8")
-    );
-    const structuredFunds = restructureFunds(funds);
-    const rawCommands = fs.readFileSync(
-      "./resource/sample-input/input1.txt",
-      "utf-8"
-    );
-    const parsedCommands = parseCommands(rawCommands);
-
-    assert.strictEqual(
-      evaluatePortfolioQuery(parsedCommands, structuredFunds),
-      expectedOutput
-    );
+    assert.deepStrictEqual(output, expectedOutput);
   });
 
   it("should able to meet output for sample input 2", () => {
+    const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
+    const funds = parseFunds(fundsJSON);
+
+    const rawCommands = fs.readFileSync(
+      "./resource/sample-input/input2.txt",
+      "utf-8"
+    );
+    const commands = parseCommands(rawCommands);
+    const logs = evaluatePortfolioQuery(commands, funds);
+
+    let output = "";
+    const renderer = (text) => {
+      output = text;
+    };
+
+    displayLog(logs, renderer);
+
     const expectedOutput = `ICICI_PRU_NIFTY_NEXT_50_INDEX UTI_NIFTY_INDEX 20.37%
 ICICI_PRU_NIFTY_NEXT_50_INDEX AXIS_MIDCAP 14.81%
 ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.41%
@@ -47,20 +69,7 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX UTI_NIFTY_INDEX 20.37%
 ICICI_PRU_NIFTY_NEXT_50_INDEX AXIS_MIDCAP 14.68%
 ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
 
-    const { funds } = JSON.parse(
-      fs.readFileSync("resource/mutual-funds.json", "utf-8")
-    );
-    const structuredFunds = restructureFunds(funds);
-    const rawCommands = fs.readFileSync(
-      "./resource/sample-input/input2.txt",
-      "utf-8"
-    );
-    const parsedCommands = parseCommands(rawCommands);
-
-    assert.strictEqual(
-      evaluatePortfolioQuery(parsedCommands, structuredFunds),
-      expectedOutput
-    );
+    assert.deepStrictEqual(output, expectedOutput);
   });
 });
 
@@ -85,29 +94,6 @@ describe("addStock", () => {
     };
 
     assert.deepStrictEqual(funds, expectedFunds);
-  });
-});
-
-describe("restructureFund", () => {
-  it("should restructure funds list", () => {
-    const funds = [
-      {
-        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
-        stocks: [
-          "INDRAPRASTHA GAS LIMITED",
-          "COLGATE - PALMOLIVE (INDIA) LIMITED",
-        ],
-      },
-    ];
-    const expectedStructuredFund = {
-      ICICI_PRU_NIFTY_NEXT_50_INDEX: [
-        "INDRAPRASTHA GAS LIMITED",
-        "COLGATE - PALMOLIVE (INDIA) LIMITED",
-      ],
-    };
-    const restructuredFund = restructureFunds(funds);
-
-    assert.deepStrictEqual(restructuredFund, expectedStructuredFund);
   });
 });
 
@@ -143,9 +129,13 @@ describe("handleOverlapQuery", () => {
       ],
     };
     const portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
-    const fundName = ["MIRAE_ASSET_EMERGING_BLUECHIP"];
+    const fundName = "MIRAE_ASSET_EMERGING_BLUECHIP";
     const expected = [
-      "MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_NIFTY_NEXT_50_INDEX 50.00%",
+      {
+        fundName: "MIRAE_ASSET_EMERGING_BLUECHIP",
+        ownedFundName: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        overlap: 50,
+      },
     ];
 
     assert.deepStrictEqual(
@@ -168,9 +158,9 @@ describe("handleOverlapQuery", () => {
     };
 
     const portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
-    const fundName = ["MIRAE_ASSET_BLUECHIP"];
+    const fundName = "MIRAE_ASSET_BLUECHIP";
 
-    const expected = ["FUND_NOT_FOUND"];
+    const expected = [{ error: "FUND_NOT_FOUND" }];
 
     assert.deepStrictEqual(
       handleOverlapQuery(fundName, portfolio, funds),

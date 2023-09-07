@@ -1,13 +1,13 @@
 const { describe, it } = require("node:test");
 const assert = require("assert");
-const { parseCommands, restructureFunds } = require("../src/parser");
+const { parseCommands, parseFunds } = require("../src/parser");
 
 describe("commandParser", () => {
   it("should parse command", () => {
     const rawCommands = "CURRENT_PORTFOLIO AS_BP I_P_B U_N_INDEX";
-    const parsedCommands = parseCommands(rawCommands);
+    const commands = parseCommands(rawCommands);
 
-    assert.deepStrictEqual(parsedCommands, [
+    assert.deepStrictEqual(commands, [
       {
         command: "CURRENT_PORTFOLIO",
         args: ["AS_BP", "I_P_B", "U_N_INDEX"],
@@ -18,9 +18,9 @@ describe("commandParser", () => {
   it("should parse commands", () => {
     const rawCommands =
       "CURRENT_PORTFOLIO AS_BP I_P_B U_N_INDEX\r\nADD_STOCK AXIS_BLUECHIP TCS";
-    const parsedCommands = parseCommands(rawCommands);
+    const commands = parseCommands(rawCommands);
 
-    assert.deepStrictEqual(parsedCommands, [
+    assert.deepStrictEqual(commands, [
       {
         command: "CURRENT_PORTFOLIO",
         args: ["AS_BP", "I_P_B", "U_N_INDEX"],
@@ -33,20 +33,45 @@ describe("commandParser", () => {
   });
 });
 
-describe("restructureFunds", () => {
-  it("should restructure funds into fund name with stocks", () => {
-    const funds = [
-      {
-        name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
-        stocks: ["INDRAPRASTHA GAS LIMITED"],
-      },
-    ];
+describe("parseFunds", () => {
+  it("should restructure single fund", () => {
+    const fundsJSON = JSON.stringify({
+      funds: [
+        {
+          name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+          stocks: ["INDRAPRASTHA GAS LIMITED"],
+        },
+      ],
+    });
 
-    const structuredFunds = restructureFunds(funds);
+    const funds = parseFunds(fundsJSON);
     const expectedFunds = {
       ICICI_PRU_NIFTY_NEXT_50_INDEX: ["INDRAPRASTHA GAS LIMITED"],
     };
 
-    assert.deepStrictEqual(structuredFunds, expectedFunds);
+    assert.deepStrictEqual(funds, expectedFunds);
+  });
+
+  it("should restructure provided funds", () => {
+    const fundsJSON = JSON.stringify({
+      funds: [
+        {
+          name: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+          stocks: [
+            "INDRAPRASTHA GAS LIMITED",
+            "COLGATE - PALMOLIVE (INDIA) LIMITED",
+          ],
+        },
+      ],
+    });
+    const expectedStructuredFund = {
+      ICICI_PRU_NIFTY_NEXT_50_INDEX: [
+        "INDRAPRASTHA GAS LIMITED",
+        "COLGATE - PALMOLIVE (INDIA) LIMITED",
+      ],
+    };
+    const funds = parseFunds(fundsJSON);
+
+    assert.deepStrictEqual(funds, expectedStructuredFund);
   });
 });

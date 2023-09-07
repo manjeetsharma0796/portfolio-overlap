@@ -8,10 +8,13 @@ const parseCommands = (rawCommands) => {
   return parsedCommands;
 };
 
-const restructureFunds = (funds) =>
-  funds.reduce((restructuredFunds, { name, stocks }) => {
+const parseFunds = (fundsJSON) => {
+  const { funds } = JSON.parse(fundsJSON);
+
+  return funds.reduce((restructuredFunds, { name, stocks }) => {
     restructuredFunds[name] = stocks;
     return restructuredFunds;
   }, {});
+};
 
-module.exports = { parseCommands, restructureFunds };
+module.exports = { parseCommands, parseFunds };

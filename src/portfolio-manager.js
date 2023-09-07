@@ -10,7 +10,7 @@ const countOverlap = (ownedStocks, stocks) => {
 
 const handleOverlapQuery = (fundName, portfolio, funds) => {
   if (!funds[fundName]) {
-    return ["FUND_NOT_FOUND"];
+    return [{ error: "FUND_NOT_FOUND" }];
   }
 
   const stocks = funds[fundName];
@@ -19,7 +19,7 @@ const handleOverlapQuery = (fundName, portfolio, funds) => {
     const ownedStocks = funds[ownedFundName];
     const overlap = countOverlap(ownedStocks, stocks);
 
-    return `${fundName} ${ownedFundName} ${overlap.toFixed(2)}%`;
+    return { fundName, ownedFundName, overlap };
   });
 };
 
@@ -31,10 +31,10 @@ const commandLookup = {
   CURRENT_PORTFOLIO: (ownedFunds, portfolio) => {
     portfolio.push(...ownedFunds);
   },
-  CALCULATE_OVERLAP: (fundNames, portfolio, log, funds) => {
+  CALCULATE_OVERLAP: (fundNames, portfolio, logs, funds) => {
     const [fundName] = fundNames;
     const result = handleOverlapQuery(fundName, portfolio, funds);
-    log.push(...result);
+    logs.push(...result);
   },
   ADD_STOCK: (fundAndStock, _, __, funds) => {
     const [fundName, stock] = fundAndStock;
@@ -43,14 +43,14 @@ const commandLookup = {
 };
 
 const evaluatePortfolioQuery = (commandsWithArgs, funds) => {
-  const log = [];
+  const logs = [];
   const portfolio = [];
 
   commandsWithArgs.forEach(({ command, args }) => {
-    commandLookup[command](args, portfolio, log, funds);
+    commandLookup[command](args, portfolio, logs, funds);
   });
 
-  return log.join("\n").trim();
+  return logs;
 };
 
 module.exports = {
