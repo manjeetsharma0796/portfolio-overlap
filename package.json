@@ -6,12 +6,14 @@
   "scripts": {
     "start": "node geektrust.js ./resource/sample-input/input1.txt",
     "test": "node --test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "coverage": "nyc node --test"
   },
   "author": "geektrust",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.48.0",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0"
   }
 }

@@ -4,7 +4,6 @@ const fs = require("fs");
 
 const {
   evaluatePortfolioQuery,
-  addStock,
   countOverlap,
   handleOverlapQuery,
 } = require("../src/portfolio-manager");
@@ -70,30 +69,6 @@ ICICI_PRU_NIFTY_NEXT_50_INDEX AXIS_MIDCAP 14.68%
 ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
 
     assert.deepStrictEqual(output, expectedOutput);
-  });
-});
-
-describe("addStock", () => {
-  it("should add stock to provided fund", () => {
-    const funds = {
-      ICICI_PRU_INDEX: [
-        "INDRAPRASTHA GAS LIMITED",
-        "COLGATE - PALMOLIVE (INDIA) LIMITED",
-      ],
-    };
-    const fund = "ICICI_PRU_INDEX";
-    const stock = "NOCIL";
-    addStock(fund, stock, funds);
-
-    const expectedFunds = {
-      ICICI_PRU_INDEX: [
-        "INDRAPRASTHA GAS LIMITED",
-        "COLGATE - PALMOLIVE (INDIA) LIMITED",
-        "NOCIL",
-      ],
-    };
-
-    assert.deepStrictEqual(funds, expectedFunds);
   });
 });
 

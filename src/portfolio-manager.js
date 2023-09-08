@@ -23,10 +23,6 @@ const handleOverlapQuery = (fundName, portfolio, funds) => {
   });
 };
 
-const addStock = (fundName, stock, funds) => {
-  funds[fundName].push(stock);
-};
-
 const commandLookup = {
   CURRENT_PORTFOLIO: (ownedFunds, portfolio) => {
     portfolio.push(...ownedFunds);
@@ -37,7 +33,7 @@ const commandLookup = {
   },
   ADD_STOCK: (fundAndStock, _, funds) => {
     const [fundName, stock] = fundAndStock;
-    addStock(fundName, stock, funds);
+    funds[fundName].push(stock);
   },
 };
 
@@ -58,7 +54,6 @@ const evaluatePortfolioQuery = (commandsWithArgs, funds) => {
 
 module.exports = {
   evaluatePortfolioQuery,
-  addStock,
   countOverlap,
   handleOverlapQuery,
 };
