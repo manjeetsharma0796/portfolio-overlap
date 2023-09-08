@@ -1,59 +1,63 @@
-const countOverlap = (ownedStocks, stocks) => {
-  const overlapCount = ownedStocks.filter((stock) =>
-    stocks.includes(stock)
-  ).length;
-  const overlap =
-    ((2 * overlapCount) / (stocks.length + ownedStocks.length)) * 100;
+class PortfolioManager {
+  #funds;
+  #portfolio;
+  #logs;
 
-  return overlap;
-};
-
-const handleOverlapQuery = (fundName, portfolio, funds) => {
-  if (!funds[fundName]) {
-    return [{ error: "FUND_NOT_FOUND" }];
+  constructor(funds, porfolio) {
+    this.#funds = funds;
+    this.#portfolio = porfolio;
+    this.#logs = [];
   }
 
-  const stocks = funds[fundName];
+  #countOverlap(ownedStocks, stocks) {
+    const overlapCount = ownedStocks.filter((stock) =>
+      stocks.includes(stock)
+    ).length;
+    const overlap =
+      ((2 * overlapCount) / (stocks.length + ownedStocks.length)) * 100;
 
-  return portfolio.map((ownedFundName) => {
-    const ownedStocks = funds[ownedFundName];
-    const overlap = countOverlap(ownedStocks, stocks);
+    return overlap;
+  }
 
-    return { fundName, ownedFundName, overlap };
-  });
-};
-
-const commandLookup = {
-  CURRENT_PORTFOLIO: (ownedFunds, portfolio) => {
-    portfolio.push(...ownedFunds);
-  },
-  CALCULATE_OVERLAP: (fundNames, portfolio, funds) => {
-    const [fundName] = fundNames;
-    return handleOverlapQuery(fundName, portfolio, funds);
-  },
-  ADD_STOCK: (fundAndStock, _, funds) => {
-    const [fundName, stock] = fundAndStock;
-    funds[fundName].push(stock);
-  },
-};
-
-const evaluatePortfolioQuery = (commandsWithArgs, funds) => {
-  const portfolio = [];
-  const logs = [];
-
-  commandsWithArgs.forEach(({ command, args }) => {
-    const result = commandLookup[command](args, portfolio, funds);
-
-    if (result) {
-      logs.push(...result);
+  #handleOverlapQuery(fundName) {
+    if (!this.#funds[fundName]) {
+      return [{ error: "FUND_NOT_FOUND" }];
     }
-  });
 
-  return logs;
-};
+    const stocks = this.#funds[fundName];
+
+    return this.#portfolio.map((ownedFundName) => {
+      const ownedStocks = this.#funds[ownedFundName];
+      const overlap = this.#countOverlap(ownedStocks, stocks);
+
+      return { fundName, ownedFundName, overlap };
+    });
+  }
+
+  generateResult(commandsWithArgs) {
+    const commandLookup = {
+      CALCULATE_OVERLAP: (fundNames) => {
+        const [fundName] = fundNames;
+        return this.#handleOverlapQuery(fundName);
+      },
+      ADD_STOCK: (fundAndStock) => {
+        const [fundName, stock] = fundAndStock;
+        this.#funds[fundName].push(stock);
+      },
+    };
+    
+    commandsWithArgs.forEach(({ command, args }) => {
+      const result = commandLookup[command](args);
+
+      if (result) {
+        this.#logs.push(...result);
+      }
+    });
+
+    return this.#logs;
+  }
+}
 
 module.exports = {
-  evaluatePortfolioQuery,
-  countOverlap,
-  handleOverlapQuery,
+  PortfolioManager,
 };

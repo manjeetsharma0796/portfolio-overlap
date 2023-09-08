@@ -1,5 +1,5 @@
-const displayLog = (logs, renderer = console.log) => {
-  const logsText = logs
+const formatLogs = (logs) => {
+  const formatedLogs = logs
     .map((result) => {
       if ("error" in result) {
         return `${Object.values(result).join(" ")}`;
@@ -10,7 +10,7 @@ const displayLog = (logs, renderer = console.log) => {
     })
     .join("\n");
 
-  renderer(logsText);
+  return formatedLogs;
 };
 
-module.exports = { displayLog };
+module.exports = { formatLogs };

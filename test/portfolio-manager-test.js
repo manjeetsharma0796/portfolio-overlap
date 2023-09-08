@@ -2,144 +2,79 @@ const { describe, it } = require("node:test");
 const assert = require("assert");
 const fs = require("fs");
 
-const {
-  evaluatePortfolioQuery,
-  countOverlap,
-  handleOverlapQuery,
-} = require("../src/portfolio-manager");
+const { PortfolioManager } = require("../src/portfolio-manager");
 const { parseCommands, parseFunds } = require("../src/parser");
-const { displayLog } = require("../src/renderer");
 
-describe("evaluatePortfolioQuery", () => {
-  it("should able to meet output for sample input 1", () => {
+describe("generateResult", () => {
+  it("should generate log for existing funds", () => {
     const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
     const funds = parseFunds(fundsJSON);
 
-    const rawCommands = fs.readFileSync(
-      "./resource/sample-input/input1.txt",
-      "utf-8"
-    );
-    const commands = parseCommands(rawCommands);
-    const logs = evaluatePortfolioQuery(commands, funds);
+    const rawCommands =
+      "CURRENT_PORTFOLIO AXIS_BLUECHIP ICICI_PRU_BLUECHIP UTI_NIFTY_INDEX\r\n" +
+      "CALCULATE_OVERLAP MIRAE_ASSET_EMERGING_BLUECHIP\r\n";
 
-    let output = "";
-    const renderer = (text) => {
-      output = text;
-    };
+    const [portfolioInfo, ...commands] = parseCommands(rawCommands);
+    const portfolio = [...portfolioInfo.args];
+    const portfolioManager = new PortfolioManager(funds, portfolio);
 
-    displayLog(logs, renderer);
+    const logs = portfolioManager.generateResult(commands, funds);
 
-    const expectedOutput = `MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 39.13%
-MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
-MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%
-MIRAE_ASSET_LARGE_CAP AXIS_BLUECHIP 43.75%
-MIRAE_ASSET_LARGE_CAP ICICI_PRU_BLUECHIP 44.62%
-MIRAE_ASSET_LARGE_CAP UTI_NIFTY_INDEX 95.00%
-MIRAE_ASSET_EMERGING_BLUECHIP AXIS_BLUECHIP 38.71%
-MIRAE_ASSET_EMERGING_BLUECHIP ICICI_PRU_BLUECHIP 38.10%
-MIRAE_ASSET_EMERGING_BLUECHIP UTI_NIFTY_INDEX 65.52%`;
-
-    assert.deepStrictEqual(output, expectedOutput);
-  });
-
-  it("should able to meet output for sample input 2", () => {
-    const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
-    const funds = parseFunds(fundsJSON);
-
-    const rawCommands = fs.readFileSync(
-      "./resource/sample-input/input2.txt",
-      "utf-8"
-    );
-    const commands = parseCommands(rawCommands);
-    const logs = evaluatePortfolioQuery(commands, funds);
-
-    let output = "";
-    const renderer = (text) => {
-      output = text;
-    };
-
-    displayLog(logs, renderer);
-
-    const expectedOutput = `ICICI_PRU_NIFTY_NEXT_50_INDEX UTI_NIFTY_INDEX 20.37%
-ICICI_PRU_NIFTY_NEXT_50_INDEX AXIS_MIDCAP 14.81%
-ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.41%
-FUND_NOT_FOUND
-ICICI_PRU_NIFTY_NEXT_50_INDEX UTI_NIFTY_INDEX 20.37%
-ICICI_PRU_NIFTY_NEXT_50_INDEX AXIS_MIDCAP 14.68%
-ICICI_PRU_NIFTY_NEXT_50_INDEX PARAG_PARIKH_FLEXI_CAP 7.32%`;
-
-    assert.deepStrictEqual(output, expectedOutput);
-  });
-});
-
-describe("countOverlap", () => {
-  it("should give overlap percentage as 0 of two stocks, none overlaps", () => {
-    const ownedStocks = ["A"];
-    const stocks = ["B"];
-    const overlap = countOverlap(ownedStocks, stocks);
-
-    assert.strictEqual(overlap, 0);
-  });
-
-  it("should be non zero percentage value given stocks,as it overlaps", () => {
-    const ownedStocks = ["A", "B"];
-    const stocks = ["B", "C"];
-    const overlap = countOverlap(ownedStocks, stocks);
-
-    assert.strictEqual(overlap, 50);
-  });
-});
-
-describe("handleOverlapQuery", () => {
-  it("should calculate overlap as half as half of the stocks exists", () => {
-    const funds = {
-      ICICI_PRU_NIFTY_NEXT_50_INDEX: [
-        "INFOSYS LIMITED",
-        "INDRAPRASTHA GAS LIMITED",
-      ],
-
-      MIRAE_ASSET_EMERGING_BLUECHIP: [
-        "INFOSYS LIMITED",
-        "BHARTI AIRTEL LIMITED",
-      ],
-    };
-    const portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
-    const fundName = "MIRAE_ASSET_EMERGING_BLUECHIP";
-    const expected = [
+    const expectedLogs = [
       {
         fundName: "MIRAE_ASSET_EMERGING_BLUECHIP",
-        ownedFundName: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
-        overlap: 50,
+        ownedFundName: "AXIS_BLUECHIP",
+        overlap: 39.130434782608695,
+      },
+      {
+        fundName: "MIRAE_ASSET_EMERGING_BLUECHIP",
+        ownedFundName: "ICICI_PRU_BLUECHIP",
+        overlap: 38.095238095238095,
+      },
+      {
+        fundName: "MIRAE_ASSET_EMERGING_BLUECHIP",
+        ownedFundName: "UTI_NIFTY_INDEX",
+        overlap: 65.51724137931035,
       },
     ];
 
-    assert.deepStrictEqual(
-      handleOverlapQuery(fundName, portfolio, funds),
-      expected
-    );
+    assert.deepStrictEqual(logs, expectedLogs);
   });
 
-  it("should handle non existing fund overlap calculation", () => {
-    const funds = {
-      ICICI_PRU_NIFTY_NEXT_50_INDEX: [
-        "INFOSYS LIMITED",
-        "INDRAPRASTHA GAS LIMITED",
-      ],
+  it("should able to generate message for non existing fund", () => {
+    const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
+    const funds = parseFunds(fundsJSON);
 
-      MIRAE_ASSET_EMERGING_BLUECHIP: [
-        "INFOSYS LIMITED",
-        "BHARTI AIRTEL LIMITED",
-      ],
-    };
+    const rawCommands =
+      // eslint-disable-next-line max-len
+      "CURRENT_PORTFOLIO UTI_NIFTY_INDEX AXIS_MIDCAP PARAG_PARIKH_FLEXI_CAP\r\n" +
+      "CALCULATE_OVERLAP ICICI_PRU_NIFTY_NEXT_50_INDEX\r\n" +
+      "CALCULATE_OVERLAP NIPPON_INDIA_PHARMA_FUND\r\n" +
+      "ADD_STOCK AXIS_MIDCAP NOCIL\r\n";
+    const [portfolioInfo, ...commands] = parseCommands(rawCommands);
+    const portfolio = [...portfolioInfo.args];
+    const portfolioManager = new PortfolioManager(funds, portfolio);
+    const logs = portfolioManager.generateResult(commands, funds);
 
-    const portfolio = ["ICICI_PRU_NIFTY_NEXT_50_INDEX"];
-    const fundName = "MIRAE_ASSET_BLUECHIP";
+    const expectedLogs = [
+      {
+        fundName: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        ownedFundName: "UTI_NIFTY_INDEX",
+        overlap: 20.37037037037037,
+      },
+      {
+        fundName: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        ownedFundName: "AXIS_MIDCAP",
+        overlap: 14.814814814814813,
+      },
+      {
+        fundName: "ICICI_PRU_NIFTY_NEXT_50_INDEX",
+        ownedFundName: "PARAG_PARIKH_FLEXI_CAP",
+        overlap: 7.4074074074074066,
+      },
+      { error: "FUND_NOT_FOUND" },
+    ];
 
-    const expected = [{ error: "FUND_NOT_FOUND" }];
-
-    assert.deepStrictEqual(
-      handleOverlapQuery(fundName, portfolio, funds),
-      expected
-    );
+    assert.deepStrictEqual(logs, expectedLogs);
   });
 });
