@@ -4,21 +4,22 @@ const fs = require("fs");
 
 const { PortfolioManager } = require("../src/portfolio-manager");
 const { parseCommands, parseFunds } = require("../src/parser");
+const { MutualFunds } = require("../src/mutual-funds");
 
 describe("generateResult", () => {
   it("should generate log for existing funds", () => {
     const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
     const funds = parseFunds(fundsJSON);
-
+    const mutualFunds = new MutualFunds(funds);
     const rawCommands =
       "CURRENT_PORTFOLIO AXIS_BLUECHIP ICICI_PRU_BLUECHIP UTI_NIFTY_INDEX\r\n" +
       "CALCULATE_OVERLAP MIRAE_ASSET_EMERGING_BLUECHIP\r\n";
 
-    const [portfolioInfo, ...commands] = parseCommands(rawCommands);
+    const [portfolioInfo, ...commandsWithArgs] = parseCommands(rawCommands);
     const portfolio = [...portfolioInfo.args];
-    const portfolioManager = new PortfolioManager(funds, portfolio);
+    const portfolioManager = new PortfolioManager(mutualFunds, portfolio);
 
-    const logs = portfolioManager.generateResult(commands, funds);
+    const logs = portfolioManager.generateResult(commandsWithArgs);
 
     const expectedLogs = [
       {
@@ -44,6 +45,7 @@ describe("generateResult", () => {
   it("should able to generate message for non existing fund", () => {
     const fundsJSON = fs.readFileSync("resource/mutual-funds.json", "utf-8");
     const funds = parseFunds(fundsJSON);
+    const mutualFunds = new MutualFunds(funds);
 
     const rawCommands =
       // eslint-disable-next-line max-len
@@ -51,10 +53,11 @@ describe("generateResult", () => {
       "CALCULATE_OVERLAP ICICI_PRU_NIFTY_NEXT_50_INDEX\r\n" +
       "CALCULATE_OVERLAP NIPPON_INDIA_PHARMA_FUND\r\n" +
       "ADD_STOCK AXIS_MIDCAP NOCIL\r\n";
-    const [portfolioInfo, ...commands] = parseCommands(rawCommands);
+    const [portfolioInfo, ...commandsWithArgs] = parseCommands(rawCommands);
     const portfolio = [...portfolioInfo.args];
-    const portfolioManager = new PortfolioManager(funds, portfolio);
-    const logs = portfolioManager.generateResult(commands, funds);
+    const portfolioManager = new PortfolioManager(mutualFunds, portfolio);
+
+    const logs = portfolioManager.generateResult(commandsWithArgs);
 
     const expectedLogs = [
       {
