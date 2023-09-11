@@ -2,7 +2,9 @@ const { describe, it } = require("node:test");
 const assert = require("assert");
 const fs = require("fs");
 
-const { PortfolioManager } = require("../src/portfolio-manager");
+const {
+  FundPortfolioController,
+} = require("../src/fund-portfolio-controller.js");
 const { parseCommands, parseFunds } = require("../src/parser");
 const { MutualFunds } = require("../src/mutual-funds");
 
@@ -17,9 +19,12 @@ describe("generateResult", () => {
 
     const [portfolioInfo, ...commandsWithArgs] = parseCommands(rawCommands);
     const portfolio = [...portfolioInfo.args];
-    const portfolioManager = new PortfolioManager(mutualFunds, portfolio);
+    const fundPortfolioController = new FundPortfolioController(
+      mutualFunds,
+      portfolio
+    );
 
-    const logs = portfolioManager.generateResult(commandsWithArgs);
+    const logs = fundPortfolioController.execute(commandsWithArgs);
 
     const expectedLogs = [
       {
@@ -53,11 +58,15 @@ describe("generateResult", () => {
       "CALCULATE_OVERLAP ICICI_PRU_NIFTY_NEXT_50_INDEX\r\n" +
       "CALCULATE_OVERLAP NIPPON_INDIA_PHARMA_FUND\r\n" +
       "ADD_STOCK AXIS_MIDCAP NOCIL\r\n";
+
     const [portfolioInfo, ...commandsWithArgs] = parseCommands(rawCommands);
     const portfolio = [...portfolioInfo.args];
-    const portfolioManager = new PortfolioManager(mutualFunds, portfolio);
+    const fundPortfolioController = new FundPortfolioController(
+      mutualFunds,
+      portfolio
+    );
 
-    const logs = portfolioManager.generateResult(commandsWithArgs);
+    const logs = fundPortfolioController.execute(commandsWithArgs);
 
     const expectedLogs = [
       {

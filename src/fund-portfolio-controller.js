@@ -1,4 +1,4 @@
-class PortfolioManager {
+class FundPortfolioController {
   #mutualFunds;
   #portfolio;
   #logs;
@@ -20,7 +20,7 @@ class PortfolioManager {
     });
   }
 
-  generateResult(commandsWithArgs) {
+  execute(commandsWithArgs) {
     const commandLookup = {
       CALCULATE_OVERLAP: (fundNames) => {
         const [fundName] = fundNames;
@@ -45,5 +45,5 @@ class PortfolioManager {
 }
 
 module.exports = {
-  PortfolioManager,
+  FundPortfolioController,
 };

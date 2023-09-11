@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 const { parseCommands, parseFunds } = require("./src/parser");
-const { PortfolioManager } = require("./src/portfolio-manager");
+const { FundPortfolioController } = require("./src/fund-portfolio-controller");
 const { formatLogs } = require("./src/log-formatter");
 const { MutualFunds } = require("./src/mutual-funds");
 
@@ -16,9 +16,12 @@ const main = () => {
   const portfolio = [...portfolioInfo.args];
 
   const mutualFunds = new MutualFunds(funds);
-  const portfolioManager = new PortfolioManager(mutualFunds, portfolio);
+  const fundPortfolioController = new FundPortfolioController(
+    mutualFunds,
+    portfolio
+  );
 
-  const logs = portfolioManager.generateResult(commands);
+  const logs = fundPortfolioController.execute(commands);
   const formattedLogs = formatLogs(logs);
 
   console.log(formattedLogs);
