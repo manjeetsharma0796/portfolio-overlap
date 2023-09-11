@@ -1,12 +1,10 @@
 class FundPortfolioController {
   #mutualFunds;
   #portfolio;
-  #logs;
 
   constructor(mutualFunds, porfolio) {
     this.#mutualFunds = mutualFunds;
     this.#portfolio = porfolio;
-    this.#logs = [];
   }
 
   #handleOverlapQuery(fundName) {
@@ -21,6 +19,7 @@ class FundPortfolioController {
   }
 
   execute(commandsWithArgs) {
+    const logs = [];
     const commandLookup = {
       CALCULATE_OVERLAP: (fundNames) => {
         const [fundName] = fundNames;
@@ -36,11 +35,11 @@ class FundPortfolioController {
       const result = commandLookup[command](args);
 
       if (result) {
-        this.#logs.push(...result);
+        logs.push(...result);
       }
     });
 
-    return this.#logs;
+    return logs;
   }
 }
 
